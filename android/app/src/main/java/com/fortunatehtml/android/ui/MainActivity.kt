@@ -99,8 +99,12 @@ class MainActivity : AppCompatActivity() {
             /**
              * Android's WebViewClient.shouldInterceptRequest() lets us observe
              * every resource request the WebView makes, including headers and method.
-             * We record these for display in the Live tab WITHOUT intercepting or
-             * modifying the response – we return null so WebView handles it normally.
+             * We record document and XHR/fetch requests for display in the Live tab
+             * WITHOUT intercepting or modifying the response – we return null so
+             * WebView handles it normally.
+             *
+             * Static assets (images, fonts, CSS, JS, media) are filtered out to
+             * avoid flooding the traffic list with non-API entries.
              *
              * Note: Response bodies are not available through this API. For full
              * request+response inspection, use the Repeater with the in-app OkHttp client.
@@ -110,6 +114,11 @@ class MainActivity : AppCompatActivity() {
                 request: android.webkit.WebResourceRequest
             ): android.webkit.WebResourceResponse? {
                 val url = request.url.toString()
+                // Only capture API-style requests; skip obvious static assets
+                val lowerUrl = url.lowercase()
+                if (lowerUrl.matches(Regex(".*\\.(png|jpg|jpeg|gif|webp|svg|ico|woff|woff2|ttf|eot|css|js|mp4|mp3|wasm)([?#].*)?$"))) {
+                    return null
+                }
                 val method = request.method ?: "GET"
                 val headers = request.requestHeaders ?: emptyMap()
                 val uri = runCatching { java.net.URI(url) }.getOrNull()

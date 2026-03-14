@@ -17,6 +17,10 @@ import java.net.URI
 class HarImporter {
 
     private val gson = Gson()
+    // Reuse a single formatter instance across all entries (SimpleDateFormat is not thread-safe
+    // but HarImporter is used from a single coroutine at a time)
+    private val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
+        java.util.Locale.US)
 
     /**
      * Parse a HAR JSON stream and return a list of traffic entries.
@@ -61,8 +65,7 @@ class HarImporter {
 
                 val startedDateTime = obj.get("startedDateTime")?.asString
                 val timestamp = runCatching {
-                    java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
-                        java.util.Locale.US).parse(startedDateTime ?: "")?.time
+                    dateFormat.parse(startedDateTime ?: "")?.time
                 }.getOrNull() ?: System.currentTimeMillis()
 
                 result += TrafficEntryEntity(

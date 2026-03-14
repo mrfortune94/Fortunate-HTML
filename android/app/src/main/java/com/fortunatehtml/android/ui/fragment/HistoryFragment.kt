@@ -110,10 +110,13 @@ class HistoryFragment : Fragment() {
         val query = etSearch.text.toString().trim().lowercase()
         val filtered = if (query.isEmpty()) allEntries
         else allEntries.filter { e ->
-            e.url.lowercase().contains(query) ||
-            e.host.lowercase().contains(query) ||
-            e.method.lowercase().contains(query) ||
-            (e.statusCode?.toString()?.contains(query) == true)
+            // Pre-lowercase each field once per entry to avoid repeated conversions
+            val urlLc    = e.url.lowercase()
+            val hostLc   = e.host.lowercase()
+            val methodLc = e.method.lowercase()
+            val statusStr = e.statusCode?.toString() ?: ""
+            urlLc.contains(query) || hostLc.contains(query) ||
+            methodLc.contains(query) || statusStr.contains(query)
         }
         adapter.submitList(filtered)
     }

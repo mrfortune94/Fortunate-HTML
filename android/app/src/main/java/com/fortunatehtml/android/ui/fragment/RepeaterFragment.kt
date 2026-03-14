@@ -226,10 +226,12 @@ class RepeaterFragment : Fragment() {
     /** Produce a simple line-level diff summary (added/removed lines). */
     private fun buildDiff(original: String, current: String): String {
         if (original == current) return "✓ Response identical to original"
-        val origSet = original.lines().toHashSet()
-        val currSet = current.lines().toHashSet()
-        val removed = original.lines().count { it !in currSet }
-        val added   = current.lines().count { it !in origSet }
+        val origLines = original.lines()
+        val currLines = current.lines()
+        val origSet   = origLines.toHashSet()
+        val currSet   = currLines.toHashSet()
+        val removed   = origLines.count { it !in currSet }
+        val added     = currLines.count { it !in origSet }
         return "Δ Diff vs original: +$added lines / -$removed lines"
     }
 }
