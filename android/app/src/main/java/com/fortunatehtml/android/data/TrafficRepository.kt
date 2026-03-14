@@ -1,8 +1,8 @@
-package com.proxyman.android.data
+package com.fortunatehtml.android.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.proxyman.android.model.TrafficEntry
+import com.fortunatehtml.android.model.TrafficEntry
 import java.util.concurrent.CopyOnWriteArrayList
 
 class TrafficRepository {

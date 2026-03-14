@@ -1,4 +1,4 @@
-package com.proxyman.android.ui
+package com.fortunatehtml.android.ui
 
 import android.Manifest
 import android.content.Intent
@@ -19,11 +19,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.proxyman.android.ProxymanApp
-import com.proxyman.android.R
-import com.proxyman.android.data.PreferencesManager
-import com.proxyman.android.proxy.CertificateManager
-import com.proxyman.android.proxy.ProxyVpnService
+import com.fortunatehtml.android.FortunateHtmlApp
+import com.fortunatehtml.android.R
+import com.fortunatehtml.android.data.PreferencesManager
+import com.fortunatehtml.android.proxy.CertificateManager
+import com.fortunatehtml.android.proxy.ProxyVpnService
 
 class MainActivity : AppCompatActivity() {
 
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         preferencesManager = PreferencesManager(this)
         setSupportActionBar(findViewById(R.id.toolbar))
-        supportActionBar?.title = "Proxyman"
+        supportActionBar?.title = "Fortunate HTML"
 
         recyclerView = findViewById(R.id.trafficRecyclerView)
         emptyView = findViewById(R.id.emptyView)
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
         }
 
-        val app = application as ProxymanApp
+        val app = application as FortunateHtmlApp
         app.trafficRepository.trafficEntries.observe(this) { entries ->
             trafficAdapter.submitList(entries)
             emptyView.visibility = if (entries.isEmpty()) View.VISIBLE else View.GONE
@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_clear -> {
-                (application as ProxymanApp).trafficRepository.clear()
+                (application as FortunateHtmlApp).trafficRepository.clear()
                 true
             }
             R.id.action_export_cert -> {
@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity() {
             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "application/x-pem-file"
                 putExtra(Intent.EXTRA_TEXT, pem)
-                putExtra(Intent.EXTRA_SUBJECT, "Proxyman CA Certificate")
+                putExtra(Intent.EXTRA_SUBJECT, "Fortunate HTML CA Certificate")
             }
             startActivity(Intent.createChooser(shareIntent, "Export CA Certificate"))
         }
@@ -175,8 +175,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun showAboutDialog() {
         AlertDialog.Builder(this)
-            .setTitle("About Proxyman")
-            .setMessage("Proxyman for Android v1.0.0\n\nA network debugging proxy with MITM capability.\n\nThis tool is for authorized use only.")
+            .setTitle("About Fortunate HTML")
+            .setMessage("Fortunate HTML for Android v1.0.0\n\nA network debugging proxy with MITM capability.\n\nThis tool is for authorized use only.")
             .setPositiveButton("OK", null)
             .show()
     }

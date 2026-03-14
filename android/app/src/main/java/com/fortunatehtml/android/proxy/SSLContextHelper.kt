@@ -1,4 +1,4 @@
-package com.proxyman.android.proxy
+package com.fortunatehtml.android.proxy
 
 import java.security.SecureRandom
 import java.security.cert.X509Certificate

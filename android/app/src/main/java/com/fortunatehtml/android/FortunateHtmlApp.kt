@@ -1,12 +1,12 @@
-package com.proxyman.android
+package com.fortunatehtml.android
 
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
-import com.proxyman.android.data.TrafficRepository
+import com.fortunatehtml.android.data.TrafficRepository
 
-class ProxymanApp : Application() {
+class FortunateHtmlApp : Application() {
 
     lateinit var trafficRepository: TrafficRepository
         private set
@@ -25,7 +25,7 @@ class ProxymanApp : Application() {
                 "Proxy Service",
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Proxyman VPN proxy service notification"
+                description = "Fortunate HTML VPN proxy service notification"
             }
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
@@ -33,8 +33,8 @@ class ProxymanApp : Application() {
     }
 
     companion object {
-        const val NOTIFICATION_CHANNEL_ID = "proxyman_vpn_service"
-        lateinit var instance: ProxymanApp
+        const val NOTIFICATION_CHANNEL_ID = "fortunatehtml_vpn_service"
+        lateinit var instance: FortunateHtmlApp
             private set
     }
 }

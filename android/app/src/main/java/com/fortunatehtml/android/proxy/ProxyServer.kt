@@ -1,7 +1,7 @@
-package com.proxyman.android.proxy
+package com.fortunatehtml.android.proxy
 
-import com.proxyman.android.data.TrafficRepository
-import com.proxyman.android.model.TrafficEntry
+import com.fortunatehtml.android.data.TrafficRepository
+import com.fortunatehtml.android.model.TrafficEntry
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader

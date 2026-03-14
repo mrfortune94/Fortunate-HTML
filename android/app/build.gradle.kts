@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.proxyman.android"
+    namespace = "com.fortunatehtml.android"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.proxyman.android"
+        applicationId = "com.fortunatehtml.android"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

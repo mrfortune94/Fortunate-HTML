@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Proxyman"
+rootProject.name = "FortunateHTML"
 include(":app")

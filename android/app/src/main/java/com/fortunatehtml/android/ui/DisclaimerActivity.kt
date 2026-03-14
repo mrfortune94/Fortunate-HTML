@@ -1,4 +1,4 @@
-package com.proxyman.android.ui
+package com.fortunatehtml.android.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,8 +6,8 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.proxyman.android.R
-import com.proxyman.android.data.PreferencesManager
+import com.fortunatehtml.android.R
+import com.fortunatehtml.android.data.PreferencesManager
 
 class DisclaimerActivity : AppCompatActivity() {
 

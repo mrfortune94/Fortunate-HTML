@@ -1,4 +1,4 @@
-package com.proxyman.android.model
+package com.fortunatehtml.android.model
 
 import org.junit.Assert.*
 import org.junit.Test

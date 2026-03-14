@@ -1,4 +1,4 @@
-package com.proxyman.android.proxy
+package com.fortunatehtml.android.proxy
 
 import android.content.Context
 import org.bouncycastle.asn1.x500.X500Name
@@ -71,7 +71,7 @@ class CertificateManager(private val context: Context) {
         calendar.add(Calendar.YEAR, 10)
         val expiry = calendar.time
 
-        val issuer = X500Name("CN=Proxyman CA, O=Proxyman, L=Android")
+        val issuer = X500Name("CN=Fortunate HTML CA, O=Fortunate HTML, L=Android")
         val serial = BigInteger.valueOf(SecureRandom().nextLong()).abs()
 
         val builder = JcaX509v3CertificateBuilder(
@@ -131,7 +131,7 @@ class CertificateManager(private val context: Context) {
         calendar.add(Calendar.YEAR, 1)
         val expiry = calendar.time
 
-        val subject = X500Name("CN=$host, O=Proxyman")
+        val subject = X500Name("CN=$host, O=Fortunate HTML")
         val serial = BigInteger.valueOf(SecureRandom().nextLong()).abs()
 
         val builder = JcaX509v3CertificateBuilder(
@@ -181,8 +181,8 @@ class CertificateManager(private val context: Context) {
     }
 
     companion object {
-        private const val CA_KEYSTORE_FILE = "proxyman_ca.bks"
-        private const val CA_ALIAS = "proxyman_ca"
-        private const val CA_PASSWORD = "proxyman_ca_store"
+        private const val CA_KEYSTORE_FILE = "fortunatehtml_ca.bks"
+        private const val CA_ALIAS = "fortunatehtml_ca"
+        private const val CA_PASSWORD = "fortunatehtml_ca_store"
     }
 }

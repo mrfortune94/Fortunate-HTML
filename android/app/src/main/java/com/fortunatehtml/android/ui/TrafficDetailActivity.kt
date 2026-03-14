@@ -1,10 +1,10 @@
-package com.proxyman.android.ui
+package com.fortunatehtml.android.ui
 
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.proxyman.android.ProxymanApp
-import com.proxyman.android.R
+import com.fortunatehtml.android.FortunateHtmlApp
+import com.fortunatehtml.android.R
 
 class TrafficDetailActivity : AppCompatActivity() {
 
@@ -20,7 +20,7 @@ class TrafficDetailActivity : AppCompatActivity() {
             return
         }
 
-        val app = application as ProxymanApp
+        val app = application as FortunateHtmlApp
         val entry = app.trafficRepository.getEntry(entryId) ?: run {
             finish()
             return

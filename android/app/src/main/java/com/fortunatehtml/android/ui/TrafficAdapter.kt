@@ -1,4 +1,4 @@
-package com.proxyman.android.ui
+package com.fortunatehtml.android.ui
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.proxyman.android.R
-import com.proxyman.android.model.TrafficEntry
+import com.fortunatehtml.android.R
+import com.fortunatehtml.android.model.TrafficEntry
 
 class TrafficAdapter(
     private val onItemClick: (TrafficEntry) -> Unit

@@ -1,14 +1,14 @@
-package com.proxyman.android.proxy
+package com.fortunatehtml.android.proxy
 
 import android.app.PendingIntent
 import android.content.Intent
 import android.net.VpnService
 import android.os.ParcelFileDescriptor
 import androidx.core.app.NotificationCompat
-import com.proxyman.android.ProxymanApp
-import com.proxyman.android.R
-import com.proxyman.android.data.PreferencesManager
-import com.proxyman.android.ui.MainActivity
+import com.fortunatehtml.android.FortunateHtmlApp
+import com.fortunatehtml.android.R
+import com.fortunatehtml.android.data.PreferencesManager
+import com.fortunatehtml.android.ui.MainActivity
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.InetSocketAddress
@@ -40,13 +40,13 @@ class ProxyVpnService : VpnService() {
         val certManager = CertificateManager(this)
         certManager.initialize()
 
-        val app = application as ProxymanApp
+        val app = application as FortunateHtmlApp
         proxyServer = ProxyServer(port, certManager, app.trafficRepository, prefs.mitmEnabled)
         proxyServer?.start()
 
         // Set up VPN interface
         val builder = Builder()
-            .setSession("Proxyman")
+            .setSession("Fortunate HTML")
             .addAddress("10.0.0.2", 32)
             .addRoute("0.0.0.0", 0)
             .addDnsServer("8.8.8.8")
@@ -111,8 +111,8 @@ class ProxyVpnService : VpnService() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        return NotificationCompat.Builder(this, ProxymanApp.NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("Proxyman Active")
+        return NotificationCompat.Builder(this, FortunateHtmlApp.NOTIFICATION_CHANNEL_ID)
+            .setContentTitle("Fortunate HTML Active")
             .setContentText("Intercepting network traffic")
             .setSmallIcon(R.drawable.ic_vpn_key)
             .setContentIntent(pendingIntent)
@@ -126,8 +126,8 @@ class ProxyVpnService : VpnService() {
     }
 
     companion object {
-        const val ACTION_START = "com.proxyman.android.START_VPN"
-        const val ACTION_STOP = "com.proxyman.android.STOP_VPN"
+        const val ACTION_START = "com.fortunatehtml.android.START_VPN"
+        const val ACTION_STOP = "com.fortunatehtml.android.STOP_VPN"
         private const val NOTIFICATION_ID = 1
     }
 }

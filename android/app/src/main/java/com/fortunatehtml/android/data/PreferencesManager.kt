@@ -1,4 +1,4 @@
-package com.proxyman.android.data
+package com.fortunatehtml.android.data
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -21,7 +21,7 @@ class PreferencesManager(context: Context) {
         set(value) = prefs.edit().putBoolean(KEY_MITM_ENABLED, value).apply()
 
     companion object {
-        private const val PREFS_NAME = "proxyman_prefs"
+        private const val PREFS_NAME = "fortunatehtml_prefs"
         private const val KEY_DISCLAIMER_ACCEPTED = "disclaimer_accepted"
         private const val KEY_PROXY_PORT = "proxy_port"
         private const val KEY_MITM_ENABLED = "mitm_enabled"

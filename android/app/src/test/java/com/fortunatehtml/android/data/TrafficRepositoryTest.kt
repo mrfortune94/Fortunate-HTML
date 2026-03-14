@@ -1,6 +1,6 @@
-package com.proxyman.android.data
+package com.fortunatehtml.android.data
 
-import com.proxyman.android.model.TrafficEntry
+import com.fortunatehtml.android.model.TrafficEntry
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
