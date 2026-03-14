@@ -58,6 +58,33 @@
             android:textColor="@color/on_surface"
             android:layout_marginBottom="12dp"/>
 
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/divider" android:layout_marginBottom="8dp"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="In-App Request Options (Repeater only)"
+            android:textColor="@color/primary" android:textSize="13sp"
+            android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <CheckBox android:id="@+id/settingsSelfSigned"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/settings_accept_self_signed"
+            android:textColor="@color/on_surface"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="@string/settings_external_proxy_label"
+            android:textColor="@color/on_surface" android:textSize="14sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText android:id="@+id/settingsExternalProxy"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:hint="http://192.168.1.5:8080"
+            android:singleLine="true"
+            android:inputType="textUri"
+            android:textColor="@color/on_surface"
+            android:textColorHint="@color/text_secondary"
+            android:layout_marginBottom="12dp"/>
+
         <Button android:id="@+id/btnSaveSettings"
             android:layout_width="match_parent" android:layout_height="48dp"
             android:text="@string/btn_save_settings"

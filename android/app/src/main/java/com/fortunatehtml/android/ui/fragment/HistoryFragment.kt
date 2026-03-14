@@ -8,15 +8,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fortunatehtml.android.FortunateHtmlApp
 import com.fortunatehtml.android.R
+import com.fortunatehtml.android.data.db.entity.TrafficEntryEntity
 import com.fortunatehtml.android.model.TrafficEntry
+import com.fortunatehtml.android.network.HarExporter
 import com.fortunatehtml.android.network.HarImporter
 import com.fortunatehtml.android.ui.TrafficAdapter
 import com.fortunatehtml.android.ui.TrafficDetailActivity
@@ -25,8 +29,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** Chronological list of all captured traffic with HAR import support. */
+/**
+ * Chronological list of all captured traffic.
+ * Supports HAR import, HAR export, search by host/URL, and clear.
+ */
 class HistoryFragment : Fragment() {
+
+    private lateinit var etSearch: EditText
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: TrafficAdapter
+    private var allEntries: List<TrafficEntry> = emptyList()
 
     private val harImportLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -36,16 +48,25 @@ class HistoryFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                               savedInstanceState: Bundle?): View =
-        inflater.inflate(R.layout.fragment_history, container, false)
+    private val harExportLauncher = registerForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        uri?.let { exportHar(it) }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = inflater.inflate(R.layout.fragment_history, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val recyclerView = view.findViewById<RecyclerView>(R.id.historyRecyclerView)
+        etSearch         = view.findViewById(R.id.historySearch)
+        recyclerView     = view.findViewById(R.id.historyRecyclerView)
         val btnImportHar = view.findViewById<Button>(R.id.btnImportHar)
+        val btnExportHar = view.findViewById<Button>(R.id.btnExportHar)
         val btnClear     = view.findViewById<Button>(R.id.btnClearHistory)
 
-        val adapter = TrafficAdapter { entry ->
+        adapter = TrafficAdapter { entry ->
             val intent = Intent(requireContext(), TrafficDetailActivity::class.java)
             intent.putExtra(TrafficDetailActivity.EXTRA_ENTRY_ID, entry.id)
             startActivity(intent)
@@ -54,13 +75,18 @@ class HistoryFragment : Fragment() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter  = adapter
-            addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+            addItemDecoration(
+                DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+            )
         }
 
         val app = requireActivity().application as FortunateHtmlApp
         app.trafficRepository.trafficEntries.observe(viewLifecycleOwner) { entries ->
-            adapter.submitList(entries)
+            allEntries = entries
+            applyFilter()
         }
+
+        etSearch.doAfterTextChanged { applyFilter() }
 
         btnImportHar.setOnClickListener {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
@@ -70,10 +96,26 @@ class HistoryFragment : Fragment() {
             harImportLauncher.launch(intent)
         }
 
+        btnExportHar.setOnClickListener {
+            harExportLauncher.launch("traffic_export.har.json")
+        }
+
         btnClear.setOnClickListener {
             app.trafficRepository.clear()
             Toast.makeText(requireContext(), "History cleared", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun applyFilter() {
+        val query = etSearch.text.toString().trim().lowercase()
+        val filtered = if (query.isEmpty()) allEntries
+        else allEntries.filter { e ->
+            e.url.lowercase().contains(query) ||
+            e.host.lowercase().contains(query) ||
+            e.method.lowercase().contains(query) ||
+            (e.statusCode?.toString()?.contains(query) == true)
+        }
+        adapter.submitList(filtered)
     }
 
     private fun importHar(uri: Uri) {
@@ -100,8 +142,54 @@ class HistoryFragment : Fragment() {
                             )
                         )
                     }
+                    Toast.makeText(
+                        requireContext(),
+                        "Imported ${entries.size} entries",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun exportHar(uri: Uri) {
+        val entries = allEntries
+        CoroutineScope(Dispatchers.IO).launch {
+            runCatching {
+                val entityList = entries.map { e ->
+                    TrafficEntryEntity(
+                        id              = e.id,
+                        method          = e.method,
+                        url             = e.url,
+                        host            = e.host,
+                        path            = e.path,
+                        scheme          = e.scheme,
+                        requestHeaders  = e.requestHeaders,
+                        requestBody     = e.requestBody,
+                        statusCode      = e.statusCode,
+                        responseHeaders = e.responseHeaders,
+                        responseBody    = e.responseBody,
+                        timestamp       = e.timestamp,
+                        duration        = e.duration,
+                        responseSize    = e.responseSize,
+                        isHttps         = e.isHttps,
+                        state           = e.state.name,
+                        contentType     = e.responseHeaders["Content-Type"]
+                            ?: e.responseHeaders["content-type"]
+                    )
+                }
+                val json = HarExporter().export(entityList)
+                requireContext().contentResolver.openOutputStream(uri)?.use { out ->
+                    out.write(json.toByteArray())
+                }
+                withContext(Dispatchers.Main) {
                     Toast.makeText(requireContext(),
-                        "Imported ${entries.size} entries", Toast.LENGTH_SHORT).show()
+                        "Exported ${entries.size} entries", Toast.LENGTH_SHORT).show()
+                }
+            }.onFailure { e ->
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(),
+                        "Export failed: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -86,19 +86,7 @@ class MainActivity : AppCompatActivity() {
                 currentUrlText.text  = url
                 btnBack.isEnabled    = webView.canGoBack()
                 btnForward.isEnabled = webView.canGoForward()
-                // Record navigation event (URL only – WebView does not expose
-                // full request/response data to the host app)
-                val uri = runCatching { java.net.URI(url) }.getOrNull() ?: return
-                trafficRepository.addEntry(
-                    TrafficEntry(
-                        method  = "GET",
-                        url     = url,
-                        host    = uri.host ?: "",
-                        path    = uri.path ?: "/",
-                        scheme  = uri.scheme ?: "https",
-                        isHttps = uri.scheme == "https"
-                    )
-                )
+                // UI-only update; resource-level capture is handled by shouldInterceptRequest
             }
 
             override fun onPageFinished(view: WebView, url: String) {
@@ -106,6 +94,40 @@ class MainActivity : AppCompatActivity() {
                 currentUrlText.text  = url
                 btnBack.isEnabled    = webView.canGoBack()
                 btnForward.isEnabled = webView.canGoForward()
+            }
+
+            /**
+             * Android's WebViewClient.shouldInterceptRequest() lets us observe
+             * every resource request the WebView makes, including headers and method.
+             * We record these for display in the Live tab WITHOUT intercepting or
+             * modifying the response – we return null so WebView handles it normally.
+             *
+             * Note: Response bodies are not available through this API. For full
+             * request+response inspection, use the Repeater with the in-app OkHttp client.
+             */
+            override fun shouldInterceptRequest(
+                view: WebView,
+                request: android.webkit.WebResourceRequest
+            ): android.webkit.WebResourceResponse? {
+                val url = request.url.toString()
+                val method = request.method ?: "GET"
+                val headers = request.requestHeaders ?: emptyMap()
+                val uri = runCatching { java.net.URI(url) }.getOrNull()
+                if (uri != null) {
+                    trafficRepository.addEntry(
+                        TrafficEntry(
+                            method          = method,
+                            url             = url,
+                            host            = uri.host ?: "",
+                            path            = uri.path ?: "/",
+                            scheme          = uri.scheme ?: "https",
+                            requestHeaders  = headers,
+                            isHttps         = uri.scheme == "https",
+                            state           = TrafficEntry.State.PENDING
+                        )
+                    )
+                }
+                return null // Let WebView handle the request normally
             }
         }
 
@@ -163,6 +185,10 @@ class MainActivity : AppCompatActivity() {
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = getString(tabTitles[position])
         }.attach()
+    }
+
+    fun navigateToTab(index: Int) {
+        viewPager.currentItem = index
     }
 
     private fun navigateWebView(url: String) {

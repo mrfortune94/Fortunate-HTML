@@ -57,6 +57,20 @@ class PreferencesManager(context: Context) {
         get() = prefs.getBoolean(KEY_BIOMETRIC_LOCK, false)
         set(value) = prefs.edit().putBoolean(KEY_BIOMETRIC_LOCK, value).apply()
 
+    /** Accept self-signed / private-CA certs for in-app OkHttp requests (Repeater only). */
+    var acceptSelfSignedCerts: Boolean
+        get() = prefs.getBoolean(KEY_ACCEPT_SELF_SIGNED, false)
+        set(value) = prefs.edit().putBoolean(KEY_ACCEPT_SELF_SIGNED, value).apply()
+
+    /**
+     * Optional forward proxy URL for in-app OkHttp requests (Repeater only).
+     * E.g. "http://192.168.1.5:8080" to route through the user's own Burp/Charles instance.
+     * Leave empty to make requests directly.
+     */
+    var externalProxyUrl: String
+        get() = prefs.getString(KEY_EXTERNAL_PROXY, "") ?: ""
+        set(value) = prefs.edit().putString(KEY_EXTERNAL_PROXY, value).apply()
+
     companion object {
         private const val PREFS_NAME = "pocket_api_inspector_prefs"
         private const val KEY_DISCLAIMER_ACCEPTED    = "disclaimer_accepted"
@@ -68,5 +82,7 @@ class PreferencesManager(context: Context) {
         private const val KEY_PRETTY_JSON            = "pretty_print_json"
         private const val KEY_DISABLE_SCREENSHOTS    = "disable_screenshots"
         private const val KEY_BIOMETRIC_LOCK         = "biometric_lock"
+        private const val KEY_ACCEPT_SELF_SIGNED     = "accept_self_signed_certs"
+        private const val KEY_EXTERNAL_PROXY         = "external_proxy_url"
     }
 }

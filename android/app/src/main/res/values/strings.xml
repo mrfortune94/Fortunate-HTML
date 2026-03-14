@@ -73,6 +73,13 @@
     <string name="repeater_sending">Sending\u2026</string>
     <string name="repeater_url_required">URL is required.</string>
 
+    <!-- Settings new -->
+    <string name="settings_accept_self_signed">Accept self-signed certs (in-app Repeater only)</string>
+    <string name="settings_external_proxy_label">Forward Repeater requests through proxy (optional)</string>
+
+    <!-- History -->
+    <string name="btn_export_har">Export HAR</string>
+
     <!-- Clear data dialog -->
     <string name="dialog_clear_data_title">Clear All Data</string>
     <string name="dialog_clear_data_message">This will delete all traffic history, projects, logs, and scope rules. This cannot be undone.</string>
