@@ -1,9 +1,11 @@
 package com.fortunatehtml.android.proxy
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.fortunatehtml.android.data.TrafficRepository
 import com.fortunatehtml.android.model.TrafficEntry
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -11,6 +13,9 @@ import org.junit.Test
  * network or Android system services.
  */
 class ProxyServerTest {
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var repository: TrafficRepository
 

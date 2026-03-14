@@ -1,11 +1,16 @@
 package com.fortunatehtml.android.data
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.fortunatehtml.android.model.TrafficEntry
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class TrafficRepositoryTest {
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var repository: TrafficRepository
 
