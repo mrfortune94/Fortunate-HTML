@@ -218,14 +218,16 @@ class RepeaterFragment : Fragment() {
     /**
      * Log when user explicitly overrides scope restriction
      */
-    private fun logScopeOverride(host: String) {
+    private fun logScopeOverride(@Suppress("UNUSED_PARAMETER") host: String) {
         val app = requireActivity().application as FortunateHtmlApp
         ioScope.launch {
+            // Log scope override without exposing full hostname for security
+            // Only log that an override occurred, not the specific target
             app.database.logDao().insert(
                 LogEntry(
                     category = "scope",
-                    message = "Out-of-scope request sent",
-                    detail = "Host: $host (user override)"
+                    message = "Out-of-scope request sent (user override)",
+                    detail = "User confirmed sending request to out-of-scope host"
                 )
             )
         }

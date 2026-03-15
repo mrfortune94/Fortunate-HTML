@@ -179,12 +179,17 @@ class HistoryFragment : Fragment() {
             }
             
             // Log the import result
+            val detailMessage = buildString {
+                append("Imported ${result.entries.size} entries")
+                if (result.errors.isNotEmpty()) {
+                    append(", ${result.errors.size} errors")
+                }
+            }
             app.database.logDao().insert(
                 com.fortunatehtml.android.data.db.entity.LogEntry(
                     category = "import",
                     message = if (result.success) "HAR import successful" else "HAR import with errors",
-                    detail = "Imported ${result.entries.size} entries" + 
-                        if (result.errors.isNotEmpty()) ", ${result.errors.size} errors" else ""
+                    detail = detailMessage
                 )
             )
         }

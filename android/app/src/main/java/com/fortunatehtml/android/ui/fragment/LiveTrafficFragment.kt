@@ -140,11 +140,13 @@ class LiveTrafficFragment : Fragment() {
 
     /**
      * Escape a string for safe shell use (for unquoted or variable contexts).
-     * Escapes special shell characters.
+     * HTTP methods are validated against a whitelist of standard methods.
      */
     private fun shellEscape(input: String): String {
-        // For the method (GET, POST, etc.), we just validate it contains no special chars
-        return input.replace(Regex("[^A-Z]"), "")
+        // Validate against standard HTTP methods (case-insensitive match, return uppercase)
+        val allowedMethods = setOf("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS", "TRACE", "CONNECT")
+        val upperInput = input.uppercase()
+        return if (upperInput in allowedMethods) upperInput else "GET"
     }
 
     /**

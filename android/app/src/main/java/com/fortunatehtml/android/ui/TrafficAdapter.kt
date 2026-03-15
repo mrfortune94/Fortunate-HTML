@@ -100,8 +100,7 @@ class TrafficAdapter(
                     androidx.core.content.ContextCompat.getColor(itemView.context, R.color.selected_item_background)
                 )
             } else {
-                itemContainer.setBackgroundResource(android.R.attr.selectableItemBackground)
-                // Re-apply the ripple effect
+                // Apply the ripple effect background
                 val attrs = intArrayOf(android.R.attr.selectableItemBackground)
                 val typedArray = itemView.context.obtainStyledAttributes(attrs)
                 val backgroundResource = typedArray.getResourceId(0, 0)

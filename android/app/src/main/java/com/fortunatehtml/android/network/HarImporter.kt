@@ -42,8 +42,10 @@ class HarImporter {
      * Parse a HAR JSON stream and return a list of traffic entries.
      * Returns an empty list on parse errors rather than throwing.
      * 
-     * @deprecated Use importWithResult for better error handling
+     * @deprecated Use [importWithResult] for detailed error reporting
+     * @see importWithResult
      */
+    @Deprecated("Use importWithResult() for detailed error reporting", ReplaceWith("importWithResult(stream, projectId).entries"))
     fun import(stream: InputStream, projectId: String? = null): List<TrafficEntryEntity> {
         return importWithResult(stream, projectId).entries
     }
@@ -110,7 +112,7 @@ class HarImporter {
         }
     }
 
-    private fun parseEntry(obj: JsonObject, projectId: String?, index: Int): Result<TrafficEntryEntity> {
+    private fun parseEntry(obj: JsonObject, projectId: String?, @Suppress("UNUSED_PARAMETER") index: Int): Result<TrafficEntryEntity> {
         return runCatching {
             val request  = obj.getAsJsonObject("request")
                 ?: throw IllegalArgumentException("Missing 'request' object")
