@@ -96,7 +96,9 @@ class TrafficAdapter(
             
             // Apply highlight background for selected items
             if (isSelected) {
-                itemContainer.setBackgroundColor(Color.parseColor("#1A2196F3")) // Light blue highlight
+                itemContainer.setBackgroundColor(
+                    androidx.core.content.ContextCompat.getColor(itemView.context, R.color.selected_item_background)
+                )
             } else {
                 itemContainer.setBackgroundResource(android.R.attr.selectableItemBackground)
                 // Re-apply the ripple effect

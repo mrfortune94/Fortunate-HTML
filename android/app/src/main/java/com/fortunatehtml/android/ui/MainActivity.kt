@@ -78,8 +78,8 @@ class MainActivity : AppCompatActivity() {
         webView.settings.apply {
             javaScriptEnabled = true
             domStorageEnabled = true
-            // Enable mixed content for loading HTTP resources on HTTPS pages
-            mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            // Enable mixed content mode for compatibility (allows audio/video/images over HTTP)
+            mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
             // Enable additional settings for better browser experience
             loadWithOverviewMode = true
             useWideViewPort = true

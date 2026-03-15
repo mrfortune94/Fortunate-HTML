@@ -107,25 +107,44 @@ class LiveTrafficFragment : Fragment() {
 
     /**
      * Build a cURL command string from a TrafficEntry.
+     * Uses proper shell escaping for single-quoted strings.
      */
     private fun buildCurlCommand(entry: TrafficEntry): String {
         val sb = StringBuilder()
-        sb.append("curl -X ${entry.method}")
+        sb.append("curl -X ${shellEscape(entry.method)}")
         
         // Add headers
         entry.requestHeaders.forEach { (key, value) ->
-            sb.append(" \\\n  -H '${key}: ${value}'")
+            sb.append(" \\\n  -H '${shellEscapeSingleQuoted(key)}: ${shellEscapeSingleQuoted(value)}'")
         }
         
         // Add body if present
         if (!entry.requestBody.isNullOrEmpty()) {
-            val escapedBody = entry.requestBody.replace("'", "'\\''")
-            sb.append(" \\\n  -d '${escapedBody}'")
+            sb.append(" \\\n  -d '${shellEscapeSingleQuoted(entry.requestBody)}'")
         }
         
-        sb.append(" \\\n  '${entry.url}'")
+        sb.append(" \\\n  '${shellEscapeSingleQuoted(entry.url)}'")
         
         return sb.toString()
+    }
+
+    /**
+     * Escape a string for use inside single quotes in shell commands.
+     * Single quotes in the input are escaped as: '\''
+     * This is the safest approach for shell escaping.
+     */
+    private fun shellEscapeSingleQuoted(input: String): String {
+        // In single quotes, only single quote needs escaping (as '\'')
+        return input.replace("'", "'\\''")
+    }
+
+    /**
+     * Escape a string for safe shell use (for unquoted or variable contexts).
+     * Escapes special shell characters.
+     */
+    private fun shellEscape(input: String): String {
+        // For the method (GET, POST, etc.), we just validate it contains no special chars
+        return input.replace(Regex("[^A-Z]"), "")
     }
 
     /**
